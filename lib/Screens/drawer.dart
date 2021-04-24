@@ -1,5 +1,7 @@
 import 'package:fiverrproject1/Screens/home.dart';
 import 'package:fiverrproject1/Screens/login.dart';
+import 'package:fiverrproject1/Screens/requests.dart';
+import 'package:fiverrproject1/Screens/user.dart';
 import 'package:fiverrproject1/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -62,7 +64,7 @@ class DrawerMenu extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
                   child: Row(
                     children: [
-                      cards(context, "Requests", Login(),
+                      cards(context, "Requests", Requests(),
                           FontAwesomeIcons.fileAlt),
                       SizedBox(
                         width: 10,
@@ -76,7 +78,7 @@ class DrawerMenu extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Row(
                     children: [
-                      cards(context, "User", Login(), FontAwesomeIcons.user),
+                      cards(context, "User", Users(), FontAwesomeIcons.user),
                       SizedBox(
                         width: 10,
                       ),

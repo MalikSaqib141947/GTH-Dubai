@@ -1,5 +1,5 @@
 import 'package:fiverrproject1/Screens/drawer.dart';
-import 'package:fiverrproject1/Screens/signup.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fiverrproject1/routes.dart';
 
@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: DrawerMenu.id,
       routes: Routes.ROUTE,
     );

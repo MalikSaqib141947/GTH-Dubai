@@ -265,6 +265,7 @@ class _SigninState extends State<Signin> {
                               children: [
                                 new Row(children: [
                                   new Radio(
+                                    activeColor: kRedColor,
                                     value: 0,
                                     groupValue: _radioValue,
                                     onChanged: _handleRadioValueChange,
@@ -276,6 +277,7 @@ class _SigninState extends State<Signin> {
                                 ]),
                                 Row(children: [
                                   new Radio(
+                                    activeColor: kRedColor,
                                     value: 1,
                                     groupValue: _radioValue,
                                     onChanged: _handleRadioValueChange,
@@ -289,6 +291,7 @@ class _SigninState extends State<Signin> {
                                 ]),
                                 Row(children: [
                                   new Radio(
+                                    activeColor: kRedColor,
                                     value: 2,
                                     groupValue: _radioValue,
                                     onChanged: _handleRadioValueChange,
