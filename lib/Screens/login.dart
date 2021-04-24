@@ -2,7 +2,6 @@ import 'package:fiverrproject1/Screens/signup.dart';
 import 'package:fiverrproject1/Widgets/customTextFeild.dart';
 import 'package:fiverrproject1/utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Login extends StatelessWidget {
   static const String id = 'Login';
