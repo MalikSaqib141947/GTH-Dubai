@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:fiverrproject1/Screens/signup.dart';
+import 'package:fiverrproject1/Screens/drawer.dart';
 import 'package:fiverrproject1/Widgets/customTextFeild.dart';
 import 'package:fiverrproject1/utilities/constants.dart';
 import 'package:fiverrproject1/utilities/auth.dart' as auth;
@@ -30,6 +31,7 @@ class _LoginState extends State<Login> {
         child: Scaffold(
             body: SingleChildScrollView(
           child: Container(
+              height: MediaQuery.of(context).size.height,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: [Color(0xffc0012a), Color(0xffed5f5f)],
@@ -39,7 +41,15 @@ class _LoginState extends State<Login> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(top: 80),
+                      margin: EdgeInsets.only(top: 80),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 90,
+                        backgroundImage: AssetImage(
+                            'assets/images/GTH-DUBAI-LOGO color (3).png'),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(top: 20),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -47,16 +57,16 @@ class _LoginState extends State<Login> {
                         Text(
                           "\t\tGTH DUBAI",
                           style: TextStyle(
-                              fontSize: 40,
+                              fontSize: 28,
                               color: Colors.white,
-                              fontWeight: FontWeight.w400),
+                              fontWeight: FontWeight.w600),
                         )
                       ],
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 8),
+                        top: MediaQuery.of(context).size.height / 15),
                     padding: EdgeInsets.only(
                       left: 5,
                       right: 5,
@@ -135,28 +145,6 @@ class _LoginState extends State<Login> {
                                       });
 
                                       if (response.statusCode == 200) {
-                                        //setting the values of the user object in auth
-                                        var data = jsonDecode(response.body);
-                                        print(response.body);
-                                        auth.currentAuth.userProfile.title =
-                                            data['title'];
-                                        auth.currentAuth.userProfile.firstName =
-                                            data['firstName'];
-                                        auth.currentAuth.userProfile.lastName =
-                                            data['lastName'];
-                                        auth.currentAuth.userProfile.email =
-                                            data['email'];
-                                        auth.currentAuth.userProfile.role =
-                                            data['role'];
-
-                                        auth.currentAuth.userProfile
-                                                .locationName =
-                                            data['location']['name'];
-                                        auth.currentAuth.userProfile
-                                            .isVerified = data['isVerified'];
-                                        auth.currentAuth.userProfile.jwtToken =
-                                            data['jwtToken'];
-
                                         //showing info to user
                                         Fluttertoast.showToast(
                                             msg: 'Authenticated',
@@ -165,16 +153,34 @@ class _LoginState extends State<Login> {
                                             backgroundColor: Colors.green,
                                             textColor: Colors.white,
                                             fontSize: 16.0);
+                                        while (Navigator.of(context).canPop()) {
+                                          Navigator.of(context).pop();
+                                        }
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    (DrawerMenu())));
                                       } else {
                                         var responseInJson =
                                             jsonDecode(response.body);
-                                        print(responseInJson);
                                         var msg;
-                                        if (responseInJson['message'] == null)
-                                          msg = responseInJson['errors']
-                                              .toString();
+                                        //If there is no message field, there must be some errors to show to the user
+                                        if (responseInJson['message'] == null) {
+                                          var jsonErrors =
+                                              responseInJson['errors'];
+                                          if (jsonErrors['Email'] != null)
+                                            msg = jsonErrors['Email'][0];
+                                          else if (jsonErrors['Password'] !=
+                                              null)
+                                            msg = jsonErrors['Password'][0];
+                                          else
+                                            msg = "Authentication Failed!";
+                                        }
+                                        //otherwise, show the message field
                                         else
                                           msg = responseInJson['message'];
+                                        //The toast message
                                         Fluttertoast.showToast(
                                             msg: msg,
                                             toastLength: Toast.LENGTH_SHORT,

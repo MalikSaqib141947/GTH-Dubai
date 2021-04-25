@@ -52,10 +52,28 @@ class Auth {
       "email": email,
       "password": password,
     };
-    return await http.post(
+
+    //calling the API
+    var response = await http.post(
         'http://gthmobile-001-site1.etempurl.com/Accounts/authenticate',
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(params));
+
+    //setting the values of the current user object
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      userProfile.title = data['title'];
+      userProfile.firstName = data['firstName'];
+      userProfile.lastName = data['lastName'];
+      userProfile.email = data['email'];
+      userProfile.role = data['role'];
+      userProfile.locationName = data['location']['name'];
+      userProfile.isVerified = data['isVerified'];
+      userProfile.jwtToken = data['jwtToken'];
+    }
+
+    //returning the response
+    return response;
   }
 
   //Register a new user
@@ -101,7 +119,8 @@ class Auth {
       return await http.get('http://gthmobile-001-site1.etempurl.com/Location');
     } catch (e) {
       Fluttertoast.showToast(
-          msg: e.response.data['msg'].toString(),
+          //e.response.data['msg'].toString()
+          msg: "An error occured, please check your internet connection!",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.red,

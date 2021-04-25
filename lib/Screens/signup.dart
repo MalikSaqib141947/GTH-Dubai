@@ -101,7 +101,15 @@ class _SigninState extends State<Signin> {
           child: Column(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(top: 80),
+                  margin: EdgeInsets.only(top: 30),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 90,
+                    backgroundImage: AssetImage(
+                        'assets/images/GTH-DUBAI-LOGO color (3).png'),
+                  )),
+              Container(
+                margin: EdgeInsets.only(top: 20),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -109,16 +117,16 @@ class _SigninState extends State<Signin> {
                     Text(
                       "\t\tGTH DUBAI",
                       style: TextStyle(
-                          fontSize: 40,
+                          fontSize: 28,
                           color: Colors.white,
-                          fontWeight: FontWeight.w400),
+                          fontWeight: FontWeight.w600),
                     )
                   ],
                 ),
               ),
               Container(
                 margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height / 15),
+                    top: MediaQuery.of(context).size.height / 20),
                 padding: EdgeInsets.only(left: 10, right: 10),
                 child: Card(
                   shape: RoundedRectangleBorder(
@@ -361,17 +369,43 @@ class _SigninState extends State<Signin> {
                                           backgroundColor: Colors.green,
                                           textColor: Colors.white,
                                           fontSize: 16.0);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => (Login())));
                                     } else {
                                       var responseInJson =
                                           jsonDecode(response.body);
-                                      var msg;
-                                      if (responseInJson['message'] == null)
-                                        msg =
-                                            responseInJson['errors'].toString();
+                                      var error;
+                                      //If there is no message field, there must be some errors to show to the user
+                                      if (responseInJson['message'] == null) {
+                                        var jsonErrors =
+                                            responseInJson['errors'];
+                                        print(jsonErrors.toString());
+                                        if (jsonErrors['Email'] != null)
+                                          error = jsonErrors['Email'][0];
+                                        else if (jsonErrors['FirstName'] !=
+                                            null)
+                                          error = jsonErrors['FirstName'][0];
+                                        else if (jsonErrors['LastName'] != null)
+                                          error = jsonErrors['LastName'][0];
+                                        else if (jsonErrors['Password'] != null)
+                                          error = jsonErrors['Password'][0];
+                                        else if (jsonErrors[
+                                                'ConfirmPassword'] !=
+                                            null)
+                                          error =
+                                              jsonErrors['ConfirmPassword'][0];
+                                        else
+                                          error = "Registration Failed!";
+                                      }
+
+                                      //otherwise, show the message field
                                       else
-                                        msg = responseInJson['message'];
+                                        error = responseInJson['message'];
+                                      //The toast message
                                       Fluttertoast.showToast(
-                                          msg: msg,
+                                          msg: error.toString(),
                                           toastLength: Toast.LENGTH_SHORT,
                                           gravity: ToastGravity.BOTTOM,
                                           backgroundColor: Colors.red,

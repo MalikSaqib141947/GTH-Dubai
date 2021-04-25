@@ -2,6 +2,7 @@ import 'package:fiverrproject1/Screens/home.dart';
 import 'package:fiverrproject1/Screens/login.dart';
 import 'package:fiverrproject1/Screens/requests.dart';
 import 'package:fiverrproject1/Screens/user.dart';
+import 'package:fiverrproject1/utilities/auth.dart' as auth;
 import 'package:fiverrproject1/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -27,62 +28,83 @@ class DrawerMenu extends StatelessWidget {
               leading: Icon(Icons.person),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => (Home())));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => (Users())));
               },
             ),
             Divider(),
             ListTile(
               title: Text('Requests'),
               leading: Icon(Icons.chat),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => (Requests())));
+              },
             ),
             ListTile(
               title: Text('Customer'),
-              leading: Icon(Icons.shield),
-              onTap: () {},
+              leading: Icon(FontAwesomeIcons.shieldAlt),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => (Home())));
+              },
             ),
             Divider(),
             ListTile(
               title: Text('Settings'),
               leading: Icon(Icons.settings),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => (Home())));
+              },
             ),
           ]),
         ),
         body: SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.fromLTRB(20, 40, 0, 0),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Welcome Johns!",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                Container(
+                  child: Center(
+                      child: Text(
+                    "Welcome " + auth.currentAuth.userProfile.firstName + "!",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  )),
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       cards(context, "Requests", Requests(),
-                          FontAwesomeIcons.fileAlt),
+                          FontAwesomeIcons.fileAlt, Color(0XffF56564)),
                       SizedBox(
                         width: 10,
                       ),
-                      cards(context, "Customer", Login(),
-                          FontAwesomeIcons.shieldAlt)
+                      cards(context, "Customers", Home(),
+                          FontAwesomeIcons.shieldAlt, Color(0xff7652F3))
                     ],
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      cards(context, "User", Users(), FontAwesomeIcons.user),
+                      cards(context, "Users", Users(), FontAwesomeIcons.user,
+                          Color(0xffF5895D)),
                       SizedBox(
                         width: 10,
                       ),
-                      cards(context, "Settings", Login(), FontAwesomeIcons.cog)
+                      cards(context, "Settings", Home(), FontAwesomeIcons.cog,
+                          Color(0xff48C1E1))
                     ],
                   ),
                 ),
@@ -92,21 +114,21 @@ class DrawerMenu extends StatelessWidget {
         ));
   }
 
-  Widget cards(context, cardName, route, icon) {
+  Widget cards(context, cardName, route, icon, color) {
     return Padding(
       padding: EdgeInsets.all(5),
       child: Container(
-          height: MediaQuery.of(context).size.height / 3,
-          width: MediaQuery.of(context).size.height / 4,
+          height: MediaQuery.of(context).size.height / 4.5,
+          width: MediaQuery.of(context).size.height / 5,
           child: GestureDetector(
             onTap: () {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => route));
             },
             child: Card(
-              color: Colors.red[100],
+              color: color, //Colors.red[100],
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
               elevation: 20,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -119,14 +141,14 @@ class DrawerMenu extends StatelessWidget {
                         padding: EdgeInsets.only(top: 0),
                         child: Icon(
                           icon,
-                          size: 70,
-                          color: Colors.grey[700],
+                          size: 60,
+                          color: Colors.white,
                         ),
                       )
                     ],
                   ),
                   SizedBox(
-                    height: 40,
+                    height: 30,
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -134,7 +156,10 @@ class DrawerMenu extends StatelessWidget {
                     children: [
                       Text(
                         cardName,
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600),
                       )
                     ],
                   )
