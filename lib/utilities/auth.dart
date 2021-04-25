@@ -71,6 +71,11 @@ class Auth {
       userProfile.isVerified = data['isVerified'];
       userProfile.jwtToken = data['jwtToken'];
     }
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setString('firstname', userProfile.firstName);
+    await sharedPreferences.setString('lastname', userProfile.lastName);
+    await sharedPreferences.setString('email', userProfile.email);
+    await sharedPreferences.setString('role', userProfile.role);
 
     //returning the response
     return response;

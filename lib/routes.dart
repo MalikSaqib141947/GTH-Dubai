@@ -1,4 +1,5 @@
 import 'package:fiverrproject1/Screens/login.dart';
+import 'package:fiverrproject1/Screens/login_checker.dart';
 import 'package:fiverrproject1/Screens/requests.dart';
 import 'package:fiverrproject1/Screens/signup.dart';
 import 'package:fiverrproject1/Screens/drawer.dart';
@@ -13,6 +14,7 @@ class Routes {
     DrawerMenu.id: (context) => DrawerMenu(),
     Requests.id: (context) => Requests(),
     Users.id: (context) => Users(),
+    LoginChecker.id: (context) => LoginChecker(),
   };
 
   static Map<String, WidgetBuilder> get ROUTE => _defaultRoute;

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fiverrproject1/Screens/loader.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   static const String id = 'Login';
@@ -31,7 +32,6 @@ class _LoginState extends State<Login> {
         child: Scaffold(
             body: SingleChildScrollView(
           child: Container(
-              height: MediaQuery.of(context).size.height,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: [Color(0xffc0012a), Color(0xffed5f5f)],
@@ -156,7 +156,11 @@ class _LoginState extends State<Login> {
                                         while (Navigator.of(context).canPop()) {
                                           Navigator.of(context).pop();
                                         }
-                                        Navigator.push(
+                                        SharedPreferences sharepref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharepref.setBool("loggedin", true);
+                                        Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>

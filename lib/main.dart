@@ -1,7 +1,4 @@
-import 'package:fiverrproject1/Screens/drawer.dart';
-import 'package:fiverrproject1/Screens/signup.dart';
-import 'package:fiverrproject1/Screens/login.dart';
-
+import 'package:fiverrproject1/Screens/login_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:fiverrproject1/routes.dart';
 
@@ -16,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: Signin.id,
+      initialRoute: LoginChecker.id,
       routes: Routes.ROUTE,
     );
   }

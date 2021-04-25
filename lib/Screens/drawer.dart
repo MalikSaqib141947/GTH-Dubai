@@ -6,9 +6,24 @@ import 'package:fiverrproject1/utilities/auth.dart' as auth;
 import 'package:fiverrproject1/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DrawerMenu extends StatelessWidget {
+class DrawerMenu extends StatefulWidget {
   static const String id = 'DrawerMenu';
+  DrawerMenu({Key key}) : super(key: key);
+
+  @override
+  _DrawerMenuState createState() => _DrawerMenuState();
+}
+
+class _DrawerMenuState extends State<DrawerMenu> {
+  getUsername() async {
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    String firstname = sharedPref.get('firstname');
+    if (firstname == null) return 'Anonymous';
+    return firstname;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,12 +86,26 @@ class DrawerMenu extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  child: Center(
-                      child: Text(
-                    "Welcome " + auth.currentAuth.userProfile.firstName + "!",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  )),
+                FutureBuilder(
+                  future: getUsername(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        child: Center(
+                            child: Text(
+                          "Welcome " + snapshot.data + "!",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                        )),
+                      );
+                    } else {
+                      return Padding(
+                        padding: EdgeInsets.only(top: 30),
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
