@@ -39,14 +39,18 @@ class _SigninState extends State<Signin> {
   List<Location> locations = [];
   bool isLoading = false;
 
+  final _passwordKey = GlobalKey<FormState>();
+  final _confirmPasswordKey = GlobalKey<FormState>();
+  final _emailKey = GlobalKey<FormState>();
+
   Future<List<Location>> fetchLocations() async {
-    //once the location button is clicked, we dont need to fetch again even if setState is called
     if (!_locationClicked) {
       //call the /locations API end point
       await auth.currentAuth.getLocations().then((locationsArray) {
         //converting the data into json format
         var jsonData = jsonDecode(locationsArray.body);
         //going through the array and saving each location in locations list
+        locations.clear();
         for (var location in jsonData) {
           Location l =
               Location(location['id'], location['name'], location['code']);
@@ -54,6 +58,7 @@ class _SigninState extends State<Signin> {
         }
       });
     }
+
     //returning locations list
     return locations;
   }
@@ -85,386 +90,412 @@ class _SigninState extends State<Signin> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading)
-      return Loader();
-    else
-      return SafeArea(
-        child: Scaffold(
-            body: SingleChildScrollView(
-                child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Color(0xffc0012a), Color(0xffed5f5f)],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter),
-          ),
-          child: Column(
-            children: <Widget>[
-              Container(
-                  margin: EdgeInsets.only(top: 30),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 90,
-                    backgroundImage: AssetImage(
-                        'assets/images/GTH-DUBAI-LOGO color (3).png'),
-                  )),
-              Container(
-                margin: EdgeInsets.only(top: 20),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "\t\tGTH DUBAI",
-                      style: TextStyle(
-                          fontSize: 28,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600),
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height / 20),
-                padding: EdgeInsets.only(left: 10, right: 10),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4.0),
-                  ),
-                  elevation: 12,
-                  child: Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Create Account",
-                            style: TextStyle(
-                              color: kOrangeColor,
-                              fontSize: 28,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        CustomTextField(
-                          placeholder: 'First Name',
-                          onChanged: (value) {
-                            _firstName = value;
-                          },
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        CustomTextField(
-                          placeholder: 'Last Name',
-                          onChanged: (value) {
-                            _lastName = value;
-                          },
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        FutureBuilder(
-                            future: fetchLocations(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return DropdownButton(
-                                  hint: _country == null
-                                      ? Padding(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: Text(
-                                            _location.name,
-                                            style: TextStyle(
-                                                color: kRedColor, fontSize: 16),
-                                          ),
-                                        )
-                                      : Padding(
-                                          padding: EdgeInsets.only(left: 10),
-                                          child: Text(
-                                            _country,
-                                            style: TextStyle(
-                                                color: kRedColor, fontSize: 16),
-                                          ),
-                                        ),
-                                  isExpanded: true,
-                                  iconSize: 30.0,
-                                  style: TextStyle(color: kRedColor),
-                                  items: locations.map(
-                                    (val) {
-                                      return DropdownMenuItem<Location>(
-                                        value: val,
-                                        child: Text(
-                                          val.name.toString(),
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      );
-                                    },
-                                  ).toList(),
-                                  onChanged: (val) {
-                                    setState(
-                                      () {
-                                        _location = val;
-                                        _locationClicked = true;
-                                      },
-                                    );
-                                  },
-                                );
-                              } else {
-                                return Center(
-                                    child: Column(children: [
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  SizedBox(
-                                      width: 30,
-                                      height: 30,
-                                      child: CircularProgressIndicator(
-                                        backgroundColor: Colors.red,
-                                        strokeWidth: 4,
-                                      )),
-                                  SizedBox(
-                                    height: 10,
-                                  )
-                                ]));
-                              }
-                            }),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CustomTextField(
-                            placeholder: 'Your Email',
-                            onChanged: (value) {
-                              _email = value;
-                            }),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CustomTextField(
-                          placeholder: 'Your Password',
-                          isPassword: true,
-                          onChanged: (value) {
-                            _password = value;
-                          },
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CustomTextField(
-                          placeholder: 'Confirm Password',
-                          isPassword: true,
-                          onChanged: (value) {
-                            _confirmPassword = value;
-                          },
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: new Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                new Row(children: [
-                                  new Radio(
-                                    activeColor: kRedColor,
-                                    value: 0,
-                                    groupValue: _radioValue,
-                                    onChanged: _handleRadioValueChange,
-                                  ),
-                                  new Text(
-                                    'Broker',
-                                    style: new TextStyle(fontSize: 16.0),
-                                  )
-                                ]),
-                                Row(children: [
-                                  new Radio(
-                                    activeColor: kRedColor,
-                                    value: 1,
-                                    groupValue: _radioValue,
-                                    onChanged: _handleRadioValueChange,
-                                  ),
-                                  new Text(
-                                    'Manager',
-                                    style: new TextStyle(
-                                      fontSize: 16.0,
-                                    ),
-                                  )
-                                ]),
-                                Row(children: [
-                                  new Radio(
-                                    activeColor: kRedColor,
-                                    value: 2,
-                                    groupValue: _radioValue,
-                                    onChanged: _handleRadioValueChange,
-                                  ),
-                                  new Text(
-                                    'Sales Person',
-                                    style: new TextStyle(fontSize: 16.0),
-                                  )
-                                ])
-                              ],
-                            )),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "Password must be at least 6 character long",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Expanded(
-                              child: Container(),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-                              child: FlatButton(
-                                child: Text("Sign Up"),
-                                color: kOrangeColor,
-                                textColor: Colors.white,
-                                padding: EdgeInsets.only(
-                                    left: 38, right: 38, top: 15, bottom: 15),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5)),
-                                onPressed: () {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  auth.currentAuth
-                                      .register(
-                                          _title,
-                                          _firstName,
-                                          _lastName,
-                                          _email,
-                                          _password,
-                                          _confirmPassword,
-                                          true,
-                                          _isBroker,
-                                          _isManager,
-                                          _isSalesPerson,
-                                          _location.id)
-                                      .then((response) async {
-                                    //stopping the spinner/loader
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-
-                                    if (response.statusCode == 200) {
-                                      //showing info to user
-                                      Fluttertoast.showToast(
-                                          msg: 'Registration Successful!',
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.green,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0);
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => (Login())));
-                                    } else {
-                                      var responseInJson =
-                                          jsonDecode(response.body);
-                                      var error;
-                                      //If there is no message field, there must be some errors to show to the user
-                                      if (responseInJson['message'] == null) {
-                                        var jsonErrors =
-                                            responseInJson['errors'];
-                                        print(jsonErrors.toString());
-                                        if (jsonErrors['Email'] != null)
-                                          error = jsonErrors['Email'][0];
-                                        else if (jsonErrors['FirstName'] !=
-                                            null)
-                                          error = jsonErrors['FirstName'][0];
-                                        else if (jsonErrors['LastName'] != null)
-                                          error = jsonErrors['LastName'][0];
-                                        else if (jsonErrors['Password'] != null)
-                                          error = jsonErrors['Password'][0];
-                                        else if (jsonErrors[
-                                                'ConfirmPassword'] !=
-                                            null)
-                                          error =
-                                              jsonErrors['ConfirmPassword'][0];
-                                        else
-                                          error = "Registration Failed!";
-                                      }
-
-                                      //otherwise, show the message field
-                                      else
-                                        error = responseInJson['message'];
-                                      //The toast message
-                                      Fluttertoast.showToast(
-                                          msg: error.toString(),
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.red,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0);
-                                    }
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return SafeArea(
+      child: Scaffold(
+          body: SingleChildScrollView(
+              child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Color(0xffc0012a), Color(0xffed5f5f)],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter),
+        ),
+        child: Column(
+          children: <Widget>[
+            Container(
+                margin: EdgeInsets.only(top: 30),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 90,
+                  backgroundImage:
+                      AssetImage('assets/images/GTH-DUBAI-LOGO color (3).png'),
+                )),
+            Container(
+              margin: EdgeInsets.only(top: 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 40,
-                  ),
+                children: [
                   Text(
-                    "Already have an account?",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => (Login())));
-                    },
-                    textColor: Colors.white,
-                    child: Text(
-                      "Login",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
+                    "GTH MOBILE",
+                    style: TextStyle(
+                        fontSize: 26,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600),
                   )
                 ],
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: FlatButton(
-                  child: Text(
-                    "Terms & Conditions",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+            ),
+            Container(
+              margin:
+                  EdgeInsets.only(top: MediaQuery.of(context).size.height / 20),
+              padding: EdgeInsets.only(left: 10, right: 10),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                elevation: 12,
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Create Account",
+                          style: TextStyle(
+                            color: kOrangeColor,
+                            fontSize: 28,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      CustomTextField(
+                        placeholder: 'First Name',
+                        onChanged: (value) {
+                          _firstName = value;
+                        },
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      CustomTextField(
+                        placeholder: 'Last Name',
+                        onChanged: (value) {
+                          _lastName = value;
+                        },
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      FutureBuilder(
+                          future: fetchLocations(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return DropdownButton(
+                                hint: _country == null
+                                    ? Padding(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: Text(
+                                          _location.name,
+                                          style: TextStyle(
+                                              color: kRedColor, fontSize: 16),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: Text(
+                                          _country,
+                                          style: TextStyle(
+                                              color: kRedColor, fontSize: 16),
+                                        ),
+                                      ),
+                                isExpanded: true,
+                                iconSize: 30.0,
+                                style: TextStyle(color: kRedColor),
+                                items: locations.map(
+                                  (val) {
+                                    return DropdownMenuItem<Location>(
+                                      value: val,
+                                      child: Text(
+                                        val.name.toString(),
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (val) {
+                                  setState(
+                                    () {
+                                      _location = val;
+                                      _locationClicked = true;
+                                    },
+                                  );
+                                },
+                              );
+                            } else {
+                              return Center(
+                                  child: Column(children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                SizedBox(
+                                    width: 30,
+                                    height: 30,
+                                    child: CircularProgressIndicator(
+                                      backgroundColor: Colors.red,
+                                      strokeWidth: 4,
+                                    )),
+                                SizedBox(
+                                  height: 10,
+                                )
+                              ]));
+                            }
+                          }),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Form(
+                          key: _emailKey,
+                          child: CustomTextField(
+                              placeholder: 'Your Email',
+                              onChanged: (value) {
+                                _email = value;
+                              })),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Form(
+                          key: _passwordKey,
+                          child: CustomTextField(
+                            placeholder: 'Your Password',
+                            isPassword: true,
+                            onChanged: (value) {
+                              _password = value;
+                            },
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Form(
+                          key: _confirmPasswordKey,
+                          child: CustomTextField(
+                            placeholder: 'Confirm Password',
+                            isPassword: true,
+                            onChanged: (value) {
+                              _confirmPassword = value;
+                            },
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: new Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              new Row(children: [
+                                new Radio(
+                                  activeColor: kRedColor,
+                                  value: 0,
+                                  groupValue: _radioValue,
+                                  onChanged: _handleRadioValueChange,
+                                ),
+                                new Text(
+                                  'Broker',
+                                  style: new TextStyle(fontSize: 16.0),
+                                )
+                              ]),
+                              Row(children: [
+                                new Radio(
+                                  activeColor: kRedColor,
+                                  value: 1,
+                                  groupValue: _radioValue,
+                                  onChanged: _handleRadioValueChange,
+                                ),
+                                new Text(
+                                  'Manager',
+                                  style: new TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                )
+                              ]),
+                              Row(children: [
+                                new Radio(
+                                  activeColor: kRedColor,
+                                  value: 2,
+                                  groupValue: _radioValue,
+                                  onChanged: _handleRadioValueChange,
+                                ),
+                                new Text(
+                                  'Sales Person',
+                                  style: new TextStyle(fontSize: 16.0),
+                                )
+                              ])
+                            ],
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Password must be at least 6 character long",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Expanded(
+                            child: Container(),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                            child: isLoading
+                                ? CircularProgressIndicator()
+                                : FlatButton(
+                                    child: Text("Sign Up"),
+                                    color: kOrangeColor,
+                                    textColor: Colors.white,
+                                    padding: EdgeInsets.only(
+                                        left: 38,
+                                        right: 38,
+                                        top: 15,
+                                        bottom: 15),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5)),
+                                    onPressed: () {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      auth.currentAuth
+                                          .register(
+                                              _title,
+                                              _firstName,
+                                              _lastName,
+                                              _email,
+                                              _password,
+                                              _confirmPassword,
+                                              true,
+                                              _isBroker,
+                                              _isManager,
+                                              _isSalesPerson,
+                                              _location.id)
+                                          .then((response) async {
+                                        //stopping the spinner/loader
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+
+                                        if (response.statusCode == 200) {
+                                          //showing info to user
+                                          Fluttertoast.showToast(
+                                              msg: 'Registration Successful!',
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              backgroundColor: Colors.green,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0);
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      (Login())));
+                                        } else {
+                                          var responseInJson =
+                                              jsonDecode(response.body);
+                                          var error;
+                                          //If there is no message field, there must be some errors to show to the user
+                                          if (responseInJson['message'] ==
+                                              null) {
+                                            var jsonErrors =
+                                                responseInJson['errors'];
+                                            if (jsonErrors['Email'] != null) {
+                                              error = jsonErrors['Email'][0];
+                                              this.setState(() {
+                                                _emailKey.currentState.reset();
+                                              });
+                                            } else if (jsonErrors[
+                                                    'FirstName'] !=
+                                                null) {
+                                              error =
+                                                  jsonErrors['FirstName'][0];
+                                            } else if (jsonErrors['LastName'] !=
+                                                null) {
+                                              error = jsonErrors['LastName'][0];
+                                            } else if (jsonErrors['Password'] !=
+                                                null) {
+                                              error = jsonErrors['Password'][0];
+                                              this.setState(() {
+                                                _passwordKey.currentState
+                                                    .reset();
+                                              });
+                                            } else if (jsonErrors[
+                                                    'ConfirmPassword'] !=
+                                                null) {
+                                              error =
+                                                  jsonErrors['ConfirmPassword']
+                                                      [0];
+                                              this.setState(() {
+                                                _confirmPasswordKey.currentState
+                                                    .reset();
+                                                _passwordKey.currentState
+                                                    .reset();
+                                              });
+                                            } else
+                                              error = "Registration Failed!";
+                                          }
+
+                                          //otherwise, show the message field
+                                          else
+                                            error = responseInJson['message'];
+                                          //The toast message
+                                          Fluttertoast.showToast(
+                                              msg: error.toString(),
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              backgroundColor: Colors.red,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0);
+                                        }
+                                      });
+                                    },
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  onPressed: () {
-                    // TODO: Add functionality
-                  },
                 ),
               ),
-            ],
-          ),
-        ))),
-      );
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 40,
+                ),
+                Text(
+                  "Already have an account?",
+                  style: TextStyle(color: Colors.white),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => (Login())));
+                  },
+                  textColor: Colors.white,
+                  child: Text(
+                    "Login",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                )
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: FlatButton(
+                child: Text(
+                  "Terms & Conditions",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                onPressed: () {
+                  // TODO: Add functionality
+                },
+              ),
+            ),
+          ],
+        ),
+      ))),
+    );
   }
 }

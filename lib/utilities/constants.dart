@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 const kButtonContainerColour = 0xFFc4c4c4;
 const kDefaultBackgroundColour = 0xfff8f8f8;
 
+const kBackgroundColor = Color(0xff0A1529);
+const kDullBlueColor = Color(0xff222C3E);
+
+const kDefaultIconColour = Color(0xffdadada);
+const kSelectedIconColour = Color(0xFFDF4E67);
+
 const kNormalTextStyle = TextStyle(
   color: Color(0xffa9a9a9),
 );

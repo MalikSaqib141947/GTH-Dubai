@@ -1,5 +1,6 @@
 import 'package:fiverrproject1/Screens/loader.dart';
 import 'package:fiverrproject1/Screens/login.dart';
+import 'package:fiverrproject1/Screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fiverrproject1/Screens/drawer.dart';
@@ -21,7 +22,7 @@ class _LoginCheckerState extends State<LoginChecker> {
     bool logedin = await sharedpref.getBool("loggedin");
     if (logedin == null || logedin == false) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => (Login())));
+          context, MaterialPageRoute(builder: (context) => (LandingScreen())));
     } else {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => (DrawerMenu())));

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:fiverrproject1/Screens/signup.dart';
 import 'package:fiverrproject1/Screens/drawer.dart';
 import 'package:fiverrproject1/Widgets/customTextFeild.dart';
@@ -23,63 +24,85 @@ class _LoginState extends State<Login> {
   String _password;
   bool isLoading = false;
 
+  FocusNode myFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    myFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    myFocusNode.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading)
       return Loader();
     else
       return SafeArea(
-        child: Scaffold(
-            body: SingleChildScrollView(
-          child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Color(0xffc0012a), Color(0xffed5f5f)],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter),
+          child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Container(
+            child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [Color(0xffc0012a), Color(0xffed5f5f)],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter),
+          ),
+          child: Column(
+            children: <Widget>[
+              Container(
+                  margin: EdgeInsets.only(top: 50),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 90,
+                    backgroundImage: AssetImage(
+                        'assets/images/GTH-DUBAI-LOGO color (3).png'),
+                  )),
+              Container(
+                margin: EdgeInsets.only(top: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "GTH MOBILE",
+                      style: TextStyle(
+                          fontSize: 26,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600),
+                    )
+                  ],
+                ),
               ),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.only(top: 80),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 90,
-                        backgroundImage: AssetImage(
-                            'assets/images/GTH-DUBAI-LOGO color (3).png'),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "\t\tGTH DUBAI",
-                          style: TextStyle(
-                              fontSize: 28,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600),
-                        )
-                      ],
-                    ),
+              Container(
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 30),
+                padding: EdgeInsets.only(
+                  left: 5,
+                  right: 5,
+                ),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4.0),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 15),
-                    padding: EdgeInsets.only(
-                      left: 5,
-                      right: 5,
-                    ),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      elevation: 12,
-                      child: Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                  elevation: 12,
+                  child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Container(
+                        height: 260,
+                        child: ListView(
+                          //crossAxisAlignment: CrossAxisAlignment.center,
+                          shrinkWrap: true,
                           children: <Widget>[
                             Align(
                               alignment: Alignment.topLeft,
@@ -104,23 +127,29 @@ class _LoginState extends State<Login> {
                             SizedBox(
                               height: 20,
                             ),
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     FocusScope.of(context)
+                            //         .requestFocus(myFocusNode);
+                            //     myFocusNode.requestFocus();
+                            //   },
                             CustomTextField(
                               placeholder: "Password",
                               isPassword: true,
+                              //scrollPadding: EdgeInsets.only(bottom: 100),
+                              // focusNode: myFocusNode,
+
                               onChanged: (value) {
                                 this._password = value;
                               },
                             ),
+                            // ),
                             SizedBox(
                               height: 20,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
-                                MaterialButton(
-                                  onPressed: () {},
-                                  child: Text("Forgot Password ?"),
-                                ),
                                 Spacer(),
                                 Container(
                                     child: FlatButton(
@@ -198,42 +227,43 @@ class _LoginState extends State<Login> {
                                 ))
                               ],
                             ),
+                            SizedBox(
+                              height: 100,
+                            )
                           ],
                         ),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 40,
-                      ),
-                      Text(
-                        "Don't have an account ?",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      FlatButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => (Signin())));
-                        },
-                        textColor: Colors.white,
-                        child: Text("Create Account",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18)),
-                      ),
-                    ],
-                  ),
+                      )),
+                ),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
                   SizedBox(
-                    height: 1,
+                    height: 40,
+                  ),
+                  Text(
+                    "Don't have an account ?",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => (Signin())));
+                    },
+                    textColor: Colors.white,
+                    child: Text("Create Account",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18)),
                   ),
                 ],
-              )),
+              ),
+              SizedBox(
+                height: 1,
+              ),
+            ],
+          ),
         )),
-      );
+      ));
   }
 }
