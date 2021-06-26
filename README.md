@@ -1,16 +1,6 @@
-# fiverrproject1
+# GTH-DUBAI
 
-A new Flutter project.
+It was a fiverr project. Basically it was a property related application. It had 4 ends, salesperson, broker, manager and admin. Admin could see all  the account requests and could approve them. The admin and manager could see all the property related requests (sale, rent etc) made by salesperson and brokers and could process the request. The request goes throgh 5 stages before it gets completed. Mostly it was lots and lots of communication between the front end application and the backend APIs.
 
-## Getting Started
+Technologies Used: Flutter, ASP.NET
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
